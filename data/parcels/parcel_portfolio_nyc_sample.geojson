@@ -1,0 +1,155 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-001",
+        "name": "Hudson Yards West",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Manhattan",
+        "lot_acres": 1.8,
+        "zoning": "C6-6 — Commercial Overlay",
+        "proposed_use": "Mixed-use office / retail",
+        "proposed_gsf": 350000,
+        "stories": 14
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-74.0025, 40.7535],
+          [-74.0015, 40.7535],
+          [-74.0015, 40.7545],
+          [-74.0025, 40.7545],
+          [-74.0025, 40.7535]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-002",
+        "name": "LIC Waterfront",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Queens",
+        "lot_acres": 2.4,
+        "zoning": "R10 — Residential High-Density",
+        "proposed_use": "Residential over ground-floor retail",
+        "proposed_gsf": 280000,
+        "stories": 12
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9555, 40.7420],
+          [-73.9540, 40.7420],
+          [-73.9540, 40.7432],
+          [-73.9555, 40.7432],
+          [-73.9555, 40.7420]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-003",
+        "name": "Williamsburg North",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Brooklyn",
+        "lot_acres": 1.5,
+        "zoning": "R6 — Residential Medium",
+        "proposed_use": "Affordable residential",
+        "proposed_gsf": 195000,
+        "stories": 8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9575, 40.7180],
+          [-73.9562, 40.7180],
+          [-73.9562, 40.7190],
+          [-73.9575, 40.7190],
+          [-73.9575, 40.7180]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-004",
+        "name": "Downtown Brooklyn Core",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Brooklyn",
+        "lot_acres": 3.1,
+        "zoning": "C4-4A — Commercial District",
+        "proposed_use": "Office / coworking hub",
+        "proposed_gsf": 420000,
+        "stories": 16
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9840, 40.6930],
+          [-73.9825, 40.6930],
+          [-73.9825, 40.6945],
+          [-73.9840, 40.6945],
+          [-73.9840, 40.6930]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-005",
+        "name": "Astoria Industrial",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Queens",
+        "lot_acres": 4.2,
+        "zoning": "M1-4 — Light Industrial",
+        "proposed_use": "Light industrial / flex warehouse",
+        "proposed_gsf": 180000,
+        "stories": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9245, 40.7600],
+          [-73.9228, 40.7600],
+          [-73.9228, 40.7615],
+          [-73.9245, 40.7615],
+          [-73.9245, 40.7600]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "NYC-006",
+        "name": "Chelsea West",
+        "city": "New York",
+        "state": "NY",
+        "borough": "Manhattan",
+        "lot_acres": 1.2,
+        "zoning": "R8 — Residential High-Density",
+        "proposed_use": "Luxury condominiums",
+        "proposed_gsf": 145000,
+        "stories": 10
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-74.0048, 40.7470],
+          [-74.0038, 40.7470],
+          [-74.0038, 40.7478],
+          [-74.0048, 40.7478],
+          [-74.0048, 40.7470]
+        ]]
+      }
+    }
+  ]
+}

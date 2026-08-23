@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP x Freebuff - Visual Explainer</title>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d27;--surface-2:#242836;--border:#2e3345;--text:#e4e6ef;--text-muted:#8b8fa3;--accent:#6c5ce7;--accent-light:#a29bfe;--green:#00cec9;--orange:#fdcb6e;--red:#ff7675;--blue:#74b9ff;--radius:12px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+.hero{position:relative;padding:80px 24px 60px;text-align:center;background:linear-gradient(135deg,#0f1117,#1a1040,#0f1117);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(108,92,231,.15)0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(0,206,201,.1)0%,transparent 50%);animation:drift 20s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(-3%,2%) rotate(3deg)}}
+.hero h1{position:relative;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:12px}
+.hero h1 .mcp{color:var(--accent-light)}.hero h1 .fb{color:var(--green)}
+.hero .subtitle{position:relative;color:var(--text-muted);font-size:1.15rem;max-width:600px;margin:0 auto}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:60px 0}section+section{border-top:1px solid var(--border)}
+.section-label{display:inline-block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent-light);background:rgba(108,92,231,.15);padding:4px 12px;border-radius:20px;margin-bottom:12px}
+h2{font-size:1.8rem;font-weight:700;margin-bottom:8px}
+h2+.desc{color:var(--text-muted);margin-bottom:32px;max-width:680px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.card h3{font-size:1.1rem;margin-bottom:8px}.card p{color:var(--text-muted);font-size:.95rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+.diagram-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;overflow-x:auto}
+.diagram-wrap svg{display:block;margin:0 auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th{text-align:left;padding:12px 16px;background:var(--surface-2);color:var(--text-muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+td{padding:12px 16px;border-top:1px solid var(--border)}
+tr:hover td{background:rgba(108,92,231,.04)}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.badge-yes{background:rgba(0,206,201,.15);color:var(--green)}
+.badge-no{background:rgba(255,118,117,.15);color:var(--red)}
+.badge-partial{background:rgba(253,203,110,.15);color:var(--orange)}
+.callout{display:flex;gap:14px;padding:20px;border-radius:var(--radius);margin:24px 0}
+.callout-icon{font-size:1.5rem;flex-shrink:0;line-height:1.4}
+.callout-body h4{font-size:1rem;margin-bottom:4px}.callout-body p{font-size:.92rem;color:var(--text-muted)}
+.callout-info{background:rgba(116,185,255,.08);border:1px solid rgba(116,185,255,.2)}
+.callout-ok{background:rgba(0,206,201,.08);border:1px solid rgba(0,206,201,.2)}
+.flow{display:flex;gap:0;align-items:stretch;margin:32px 0;flex-wrap:wrap}
+.flow-step{flex:1;min-width:120px;text-align:center;padding:20px 12px;background:var(--surface);border:1px solid var(--border)}
+.flow-step:first-child{border-radius:var(--radius) 0 0 var(--radius)}
+.flow-step:last-child{border-radius:0 var(--radius) var(--radius) 0}
+.flow-step+.flow-step{border-left:none}
+.flow-step .step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:10px}
+.flow-step h4{font-size:.9rem;margin-bottom:4px}.flow-step p{font-size:.8rem;color:var(--text-muted)}
+.flow-arrow{display:flex;align-items:center;font-size:1.4rem;color:var(--accent-light);padding:0 2px;flex-shrink:0}
+@media(max-width:700px){.flow{flex-direction:column;gap:0}.flow-step{border-radius:0!important;border-left:1px solid var(--border)!important}.flow-step+.flow-step{border-top:none}.flow-arrow{transform:rotate(90deg);justify-content:center;padding:8px 0}}
+.tabs{display:flex;gap:4px;margin-bottom:20px}
+.tab-btn{padding:8px 20px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s}
+.tab-btn:hover{border-color:var(--accent);color:var(--text)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.code-block{background:#0d0f16;border:1px solid var(--border);border-radius:8px;padding:20px;font-family:'Fira Code','Cascadia Code',monospace;font-size:.82rem;line-height:1.7;overflow-x:auto;white-space:pre}
+.code-block .kw{color:var(--accent-light)}.code-block .str{color:var(--green)}
+.code-block .cmt{color:#555;font-style:italic}.code-block .fn{color:var(--orange)}
+.svg-label{font-family:'Segoe UI',system-ui,sans-serif;fill:var(--text);font-size:13px;font-weight:600}
+.svg-sublabel{font-family:'Segoe UI',system-ui,sans-serif;fill:var(--text-muted);font-size:11px}
+.verdict{text-align:center;padding:40px 24px;background:linear-gradient(135deg,rgba(108,92,231,.1),rgba(0,206,201,.08));border-radius:var(--radius);border:1px solid var(--border)}
+.verdict h2{margin-bottom:4px}.verdict p{color:var(--text-muted);max-width:520px;margin:0 auto}
+footer{text-align:center;padding:40px 24px;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1><span class="mcp">MCP</span> × <span class="fb">Freebuff</span></h1>
+<p class="subtitle">Can you connect Model Context Protocol servers inside Freebuff? A visual deep-dive into both architectures and the gap between them.</p>
+</div>
+<div class="container">
+
+<section>
+<span class="section-label">Part 1</span>
+<h2>What Is MCP?</h2>
+<p class="desc">Model Context Protocol is an open standard (by Anthropic, 2024) that lets AI models call external tools and read external data through a unified client-server interface.</p>
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 260" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCP architecture">
+<rect x="20" y="60" width="160" height="140" rx="12" fill="#1a1d27" stroke="#6c5ce7" stroke-width="2"/>
+<text x="100" y="100" text-anchor="middle" class="svg-label" fill="#a29bfe">MCP Client</text>
+<text x="100" y="122" text-anchor="middle" class="svg-sublabel">Claude Desktop</text>
+<text x="100" y="138" text-anchor="middle" class="svg-sublabel">Cursor / Windsurf</text>
+<text x="100" y="154" text-anchor="middle" class="svg-sublabel">Custom App</text>
+<text x="100" y="180" text-anchor="middle" class="svg-sublabel" fill="#6c5ce7">Sends requests</text>
+<line x1="188" y1="130" x2="280" y2="130" stroke="#6c5ce7" stroke-width="2" stroke-dasharray="6,4"/>
+<polygon points="276,124 288,130 276,136" fill="#6c5ce7"/>
+<text x="234" y="118" text-anchor="middle" class="svg-sublabel" fill="#a29bfe">stdio / SSE</text>
+<text x="234" y="152" text-anchor="middle" class="svg-sublabel" fill="#a29bfe">JSON-RPC 2.0</text>
+<rect x="292" y="60" width="160" height="140" rx="12" fill="#1a1d27" stroke="#00cec9" stroke-width="2"/>
+<text x="372" y="100" text-anchor="middle" class="svg-label" fill="#00cec9">MCP Server</text>
+<text x="372" y="122" text-anchor="middle" class="svg-sublabel">Exposes tools</text>
+<text x="372" y="138" text-anchor="middle" class="svg-sublabel">Exposes resources</text>
+<text x="372" y="154" text-anchor="middle" class="svg-sublabel">Exposes prompts</text>
+<text x="372" y="180" text-anchor="middle" class="svg-sublabel" fill="#00cec9">Runs as subprocess</text>
+<line x1="460" y1="130" x2="520" y2="130" stroke="#00cec9" stroke-width="2" stroke-dasharray="6,4"/>
+<polygon points="516,124 528,130 516,136" fill="#00cec9"/>
+<text x="490" y="118" text-anchor="middle" class="svg-sublabel" fill="#00cec9">calls</text>
+<rect x="532" y="60" width="170" height="140" rx="12" fill="#1a1d27" stroke="#fdcb6e" stroke-width="2"/>
+<text x="617" y="100" text-anchor="middle" class="svg-label" fill="#fdcb6e">External Service</text>
+<text x="617" y="122" text-anchor="middle" class="svg-sublabel">Database</text>
+<text x="617" y="138" text-anchor="middle" class="svg-sublabel">API / Filesystem</text>
+<text x="617" y="154" text-anchor="middle" class="svg-sublabel">Custom Logic</text>
+<text x="617" y="180" text-anchor="middle" class="svg-sublabel" fill="#fdcb6e">Any data source</text>
+<rect x="220" y="220" width="280" height="32" rx="8" fill="rgba(108,92,231,0.15)"/>
+<text x="360" y="241" text-anchor="middle" class="svg-sublabel" fill="#a29bfe" font-size="12">MCP Protocol Layer (JSON-RPC over stdio or HTTP+SSE)</text>
+</svg>
+</div>
+<div class="callout callout-info" style="margin-top:24px">
+<div class="callout-icon">💡</div>
+<div class="callout-body"><h4>Key idea</h4><p>MCP standardizes how an AI client discovers and invokes tools. Instead of writing a bespoke integration per API, you write one MCP server and any compatible client can use it.</p></div>
+</div>
+<div class="grid-2" style="margin-top:24px">
+<div class="card"><h3>🔧 Tools</h3><p>Functions the server exposes - e.g. <code>get_weather(city)</code>, <code>query_db(sql)</code>. The AI model can decide to call them.</p></div>
+<div class="card"><h3>📄 Resources</h3><p>Read-only data the server provides - e.g. a config file, a database schema. Clients can list and read them.</p></div>
+<div class="card"><h3>💬 Prompts</h3><p>Reusable prompt templates the server offers - e.g. "generate a code review for this diff".</p></div>
+<div class="card"><h3>🔄 Transport</h3><p>Communication layer: <strong>stdio</strong> (subprocess) for local tools, or <strong>HTTP + SSE</strong> for remote servers.</p></div>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 2</span>
+<h2>How Freebuff Works</h2>
+<p class="desc">Freebuff is a coding agent with a fixed, built-in toolset. It reads code, edits files, runs commands, searches the web, and previews web apps.</p>
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 310" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Freebuff architecture">
+<rect x="250" y="10" width="220" height="50" rx="10" fill="#1a1d27" stroke="#74b9ff" stroke-width="2"/>
+<text x="360" y="40" text-anchor="middle" class="svg-label" fill="#74b9ff">User (you)</text>
+<line x1="360" y1="64" x2="360" y2="90" stroke="#74b9ff" stroke-width="2"/>
+<polygon points="354,86 360,96 366,86" fill="#74b9ff"/>
+<rect x="170" y="100" width="380" height="55" rx="12" fill="rgba(108,92,231,0.15)" stroke="#6c5ce7" stroke-width="2"/>
+<text x="360" y="124" text-anchor="middle" class="svg-label" fill="#a29bfe" font-size="14">Buffy - Coding Agent (LLM)</text>
+<text x="360" y="144" text-anchor="middle" class="svg-sublabel">Plans, reasons, decides which tool to call</text>
+<line x1="360" y1="159" x2="360" y2="185" stroke="#6c5ce7" stroke-width="2"/>
+<polygon points="354,181 360,191 366,181" fill="#6c5ce7"/>
+<text x="380" y="180" class="svg-sublabel" fill="#a29bfe">tool calls</text>
+<rect x="20" y="195" width="680" height="105" rx="12" fill="#1a1d27" stroke="#2e3345" stroke-width="1.5"/>
+<text x="360" y="218" text-anchor="middle" class="svg-label" fill="#8b8fa3" font-size="12">FIXED TOOLSET - platform-provided, cannot be extended</text>
+<rect x="40" y="234" width="90" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="85" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">read_files</text>
+<text x="85" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Read source</text>
+<rect x="142" y="234" width="90" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="187" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">run_terminal</text>
+<text x="187" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Shell cmds</text>
+<rect x="244" y="234" width="90" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="289" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">code_search</text>
+<text x="289" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Ripgrep</text>
+<rect x="346" y="234" width="90" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="391" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">web_search</text>
+<text x="391" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Google Serper</text>
+<rect x="448" y="234" width="90" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="493" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">preview_*</text>
+<text x="493" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Browser UI</text>
+<rect x="550" y="234" width="120" height="52" rx="8" fill="#242836" stroke="#00cec9" stroke-width="1.5"/>
+<text x="610" y="257" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">write_todos</text>
+<text x="610" y="273" text-anchor="middle" class="svg-sublabel" font-size="9">Task tracking</text>
+</svg>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 3</span>
+<h2>The Gap: Why MCP Does Not Work in Freebuff</h2>
+<p class="desc">Freebuff tools are compiled into the platform. There is no plugin interface, no tool registry, and no transport layer to connect external MCP servers.</p>
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 280" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison">
+<text x="180" y="30" text-anchor="middle" class="svg-label" fill="#a29bfe" font-size="14">MCP Ecosystem</text>
+<rect x="30" y="50" width="120" height="50" rx="8" fill="#1a1d27" stroke="#a29bfe" stroke-width="1.5"/>
+<text x="90" y="80" text-anchor="middle" class="svg-sublabel" fill="#a29bfe">MCP Client</text>
+<rect x="200" y="50" width="120" height="50" rx="8" fill="#1a1d27" stroke="#00cec9" stroke-width="1.5"/>
+<text x="260" y="80" text-anchor="middle" class="svg-sublabel" fill="#00cec9">MCP Server A</text>
+<rect x="200" y="120" width="120" height="50" rx="8" fill="#1a1d27" stroke="#00cec9" stroke-width="1.5"/>
+<text x="260" y="150" text-anchor="middle" class="svg-sublabel" fill="#00cec9">MCP Server B</text>
+<line x1="154" y1="75" x2="196" y2="75" stroke="#a29bfe" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="154" y1="75" x2="196" y2="145" stroke="#a29bfe" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="180" y="200" text-anchor="middle" class="svg-sublabel" fill="#00cec9">Open protocol</text>
+<text x="180" y="218" text-anchor="middle" class="svg-sublabel" fill="#00cec9">Dynamic discovery</text>
+<text x="180" y="236" text-anchor="middle" class="svg-sublabel" fill="#00cec9">Community servers</text>
+<rect x="335" y="45" width="50" height="195" rx="6" fill="rgba(255,118,117,0.1)" stroke="#ff7675" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="360" y="130" text-anchor="middle" fill="#ff7675" font-size="20">NO</text>
+<text x="360" y="150" text-anchor="middle" fill="#ff7675" font-size="10">BRIDGE</text>
+<text x="540" y="30" text-anchor="middle" class="svg-label" fill="#00cec9" font-size="14">Freebuff</text>
+<rect x="410" y="50" width="120" height="50" rx="8" fill="#1a1d27" stroke="#00cec9" stroke-width="1.5"/>
+<text x="470" y="80" text-anchor="middle" class="svg-sublabel" fill="#00cec9">Buffy Agent</text>
+<rect x="410" y="120" width="260" height="115" rx="8" fill="#1a1d27" stroke="#2e3345" stroke-width="1.5"/>
+<text x="540" y="148" text-anchor="middle" class="svg-sublabel" fill="#8b8fa3">Built-in Tools (fixed)</text>
+<text x="540" y="170" text-anchor="middle" class="svg-sublabel" fill="#8b8fa3">read, write, search, terminal</text>
+<text x="540" y="190" text-anchor="middle" class="svg-sublabel" fill="#8b8fa3">preview, web, ask, plan</text>
+<text x="540" y="215" text-anchor="middle" class="svg-sublabel" fill="#ff7675">No plugin/tool registry</text>
+<line x1="470" y1="104" x2="470" y2="116" stroke="#00cec9" stroke-width="1.5"/>
+<polygon points="464,112 470,120 476,112" fill="#00cec9"/>
+</svg>
+</div>
+<div class="grid-2" style="margin-top:24px">
+<div class="card" style="border-color:rgba(255,118,117,0.3)"><h3 style="color:var(--red)">What Freebuff Lacks</h3><p>No MCP client library<br>No tool registration API<br>No stdio/SSE transport<br>No MCP server config</p></div>
+<div class="card" style="border-color:rgba(0,206,201,0.3)"><h3 style="color:var(--green)">What Freebuff Has</h3><p>Curated, high-quality built-in tools<br>Direct filesystem + terminal access<br>Web search + browser preview<br>Todo/plan management</p></div>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 4</span>
+<h2>What Would MCP Support Look Like?</h2>
+<p class="desc">If Freebuff were to add MCP client support, here is the architecture it would need.</p>
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 350" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hypothetical Freebuff with MCP">
+<rect x="250" y="10" width="220" height="44" rx="10" fill="#1a1d27" stroke="#74b9ff" stroke-width="1.5"/>
+<text x="360" y="38" text-anchor="middle" class="svg-label" fill="#74b9ff">User</text>
+<line x1="360" y1="58" x2="360" y2="80" stroke="#74b9ff" stroke-width="1.5"/>
+<polygon points="354,76 360,86 366,76" fill="#74b9ff"/>
+<rect x="170" y="90" width="380" height="45" rx="10" fill="rgba(108,92,231,0.15)" stroke="#6c5ce7" stroke-width="1.5"/>
+<text x="360" y="118" text-anchor="middle" class="svg-label" fill="#a29bfe" font-size="14">Buffy Agent</text>
+<rect x="30" y="160" width="320" height="90" rx="10" fill="#1a1d27" stroke="#2e3345" stroke-width="1.5"/>
+<text x="190" y="186" text-anchor="middle" class="svg-sublabel" fill="#8b8fa3" font-size="11">BUILT-IN TOOLS (unchanged)</text>
+<text x="190" y="208" text-anchor="middle" class="svg-sublabel" fill="#00cec9">read, write, terminal, search, preview</text>
+<rect x="370" y="160" width="320" height="50" rx="10" fill="rgba(253,203,110,0.1)" stroke="#fdcb6e" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="530" y="184" text-anchor="middle" class="svg-label" fill="#fdcb6e" font-size="12">MCP Client Layer (hypothetical)</text>
+<text x="530" y="200" text-anchor="middle" class="svg-sublabel" fill="#fdcb6e">Discovery, Transport, Tool Registry</text>
+<rect x="370" y="240" width="145" height="50" rx="8" fill="#1a1d27" stroke="#00cec9" stroke-width="1.5"/>
+<text x="442" y="262" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">MCP Server: DB</text>
+<text x="442" y="278" text-anchor="middle" class="svg-sublabel">query, schema</text>
+<rect x="530" y="240" width="160" height="50" rx="8" fill="#1a1d27" stroke="#00cec9" stroke-width="1.5"/>
+<text x="610" y="262" text-anchor="middle" class="svg-sublabel" fill="#00cec9" font-size="11">MCP Server: Custom</text>
+<text x="610" y="278" text-anchor="middle" class="svg-sublabel">any tool you write</text>
+<line x1="530" y1="214" x2="442" y2="236" stroke="#fdcb6e" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="530" y1="214" x2="610" y2="236" stroke="#fdcb6e" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="30" y="310" width="660" height="35" rx="8" fill="#0d0f16" stroke="#2e3345" stroke-width="1"/>
+<text x="50" y="332" class="svg-sublabel" fill="#555" font-size="11" font-family="monospace">~/.freebuff/mcp.json</text>
+<text x="370" y="332" text-anchor="middle" class="svg-sublabel" fill="#fdcb6e" font-size="10">Does not exist yet</text>
+</svg>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 5</span>
+<h2>This Project: SiteVerdict</h2>
+<p class="desc">For context, the current workspace is a FortyGuard Hackathon project - a heat-risk due-diligence tool for real estate.</p>
+<div class="flow">
+<div class="flow-step"><div class="step-num">1</div><h4>Ingest</h4><p>GeoJSON parcel boundaries</p></div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-step"><div class="step-num">2</div><h4>Analyze</h4><p>FortyGuard heatmaps, satellite, env_params</p></div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-step"><div class="step-num">3</div><h4>Score</h4><p>Exceedance, persistence, peak temp</p></div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-step"><div class="step-num">4</div><h4>Rank</h4><p>PASS / CAUTION / FAIL verdicts</p></div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-step"><div class="step-num">5</div><h4>Recommend</h4><p>Best site with evidence</p></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Backend</h3><p>Python FastAPI + Shapely + Pydantic<br>Endpoints: <code>/api/analyze</code>, <code>/api/demo</code><br>Wraps FortyGuard API calls server-side</p></div>
+<div class="card"><h3>Frontend</h3><p>React 19 + Vite + Tailwind + Leaflet<br>Interactive map + ranked result cards<br>Demo mode with cached API responses</p></div>
+</div>
+<div class="callout callout-ok" style="margin-top:24px">
+<div class="callout-icon">&#9679;</div>
+<div class="callout-body"><h4>Could SiteVerdict become an MCP server?</h4><p>Absolutely. You could wrap the FastAPI endpoints with the Python <code>mcp</code> SDK so that any MCP-compatible client (Claude Desktop, Cursor, etc.) could call <code>analyze_site</code> or <code>demo_portfolio</code> as tools. This would be straightforward given the existing API surface - but it is a change to SiteVerdict, not to Freebuff.</p></div>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 6</span>
+<h2>Feature Comparison</h2>
+<p class="desc">Where MCP and Freebuff overlap, and where they diverge.</p>
+<div style="overflow-x:auto">
+<table>
+<thead><tr><th>Capability</th><th>MCP Protocol</th><th>Freebuff</th><th>Overlap?</th></tr></thead>
+<tbody>
+<tr><td>Read/write files</td><td><span class="badge badge-yes">Via server</span></td><td><span class="badge badge-yes">Built-in</span></td><td><span class="badge badge-yes">Yes</span></td></tr>
+<tr><td>Run shell commands</td><td><span class="badge badge-partial">If server exposes</span></td><td><span class="badge badge-yes">Built-in</span></td><td><span class="badge badge-partial">Partial</span></td></tr>
+<tr><td>Web search</td><td><span class="badge badge-partial">Community server</span></td><td><span class="badge badge-yes">Built-in</span></td><td><span class="badge badge-partial">Partial</span></td></tr>
+<tr><td>Browser preview</td><td><span class="badge badge-no">Not standard</span></td><td><span class="badge badge-yes">Built-in</span></td><td><span class="badge badge-no">No</span></td></tr>
+<tr><td>Connect custom APIs</td><td><span class="badge badge-yes">Core use case</span></td><td><span class="badge badge-no">Fixed tools only</span></td><td><span class="badge badge-no">Gap</span></td></tr>
+<tr><td>Community tool ecosystem</td><td><span class="badge badge-yes">Growing</span></td><td><span class="badge badge-no">Closed</span></td><td><span class="badge badge-no">Gap</span></td></tr>
+<tr><td>LLM-driven planning</td><td><span class="badge badge-partial">Client-dependent</span></td><td><span class="badge badge-yes">Core feature</span></td><td><span class="badge badge-partial">Partial</span></td></tr>
+<tr><td>Live preview and debug</td><td><span class="badge badge-no">Not standard</span></td><td><span class="badge badge-yes">Built-in</span></td><td><span class="badge badge-no">No</span></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<span class="section-label">Part 7</span>
+<h2>Workarounds Available Today</h2>
+<p class="desc">Even without native MCP support, you can achieve similar goals using Freebuff's existing tools.</p>
+<div class="tabs" id="workaround-tabs">
+<button class="tab-btn active" onclick="showTab('tab-api')">Call Any API</button>
+<button class="tab-btn" onclick="showTab('tab-shell')">Shell MCP Servers</button>
+<button class="tab-btn" onclick="showTab('tab-build')">Build + Preview</button>
+</div>
+<div id="tab-api" class="tab-panel active">
+<div class="card">
+<h3>Use the Terminal Tool to Call External APIs</h3>
+<p style="margin:12px 0">Since Freebuff has shell access, you can <code>curl</code> or <code>python</code> any HTTP endpoint - effectively doing what an MCP HTTP transport would do, just manually.</p>
+<div class="code-block"><span class="cmt"># Example: querying an external service via terminal</span>
+<span class="kw">curl</span> -s https://api.example.com/v1/data   -H <span class="str">"Authorization: Bearer $TOKEN"</span> | <span class="fn">jq</span> .
+
+<span class="cmt"># Or run a Python script that calls the API</span>
+<span class="kw">python</span> -c <span class="str">"import requests; r = requests.get('https://...'); print(r.json())"</span></div>
+</div>
+</div>
+<div id="tab-shell" class="tab-panel">
+<div class="card">
+<h3>Run MCP Servers as Subprocesses</h3>
+<p style="margin:12px 0">You can start an MCP server process and communicate with it via its stdio transport, though this requires manual JSON-RPC formatting.</p>
+<div class="code-block"><span class="cmt"># Start an MCP server (if installed)</span>
+<span class="kw">echo</span> <span class="str">'{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</span> |   <span class="fn">npx</span> -y @modelcontextprotocol/server-filesystem /path
+
+<span class="cmt"># This works but is not integrated - you would need to</span>
+<span class="cmt"># parse and relay the output yourself.</span></div>
+</div>
+</div>
+<div id="tab-build" class="tab-panel">
+<div class="card">
+<h3>Build It Into Your Project</h3>
+<p style="margin:12px 0">The best path: add MCP server support to your own project (like SiteVerdict), then use Freebuff to build and debug it.</p>
+<div class="code-block"><span class="cmt"># Install the Python MCP SDK in your project</span>
+<span class="kw">pip</span> install mcp
+
+<span class="cmt"># Write an MCP server wrapping your FastAPI endpoints</span>
+<span class="cmt"># Freebuff can help you build and test this!</span></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="verdict">
+<h2>Bottom Line</h2>
+<p style="margin-top:8px;font-size:1.05rem;color:var(--text)">
+<strong style="color:var(--red)">No</strong> - Freebuff does not support connecting external MCP servers today.
+</p>
+<p style="margin-top:12px">
+Freebuff is a self-contained coding agent with a fixed, high-quality toolset. It cannot load or invoke MCP servers. However, you can use Freebuff's shell access to run MCP servers manually, or build MCP server support into your own projects with Freebuff's help.
+</p>
+</div>
+</section>
+</div>
+<footer>MCP x Freebuff Explainer - Generated by Buffy for Freebuff - August 2026</footer>
+<script>
+function showTab(id){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active');}
+</script>
+</body>
+</html>

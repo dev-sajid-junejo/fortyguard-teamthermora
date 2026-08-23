@@ -1,0 +1,32 @@
+# Environment variables (API keys MUST never be committed)
+.env
+.env.*
+.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
