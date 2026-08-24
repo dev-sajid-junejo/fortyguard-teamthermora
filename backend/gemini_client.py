@@ -21,7 +21,7 @@ from google.genai import types
 
 # ── Configuration ──────────────────────────────────────────────────────
 
-_MODEL_NAME = "gemini-2.5-flash"
+_MODEL_NAME = "gemini-3.5-flash-lite"
 
 _SYSTEM_PROMPT = """You are the SiteVerdict AI Copilot — an enterprise heat-risk analyst embedded in the SiteVerdict due-diligence platform.
 

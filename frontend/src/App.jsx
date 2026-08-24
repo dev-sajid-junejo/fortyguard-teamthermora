@@ -4,6 +4,7 @@ import RankedResults from './components/RankedResults'
 import Recommendation from './components/Recommendation'
 import VerdictLegend from './components/VerdictLegend'
 import CopilotChat from './components/CopilotChat'
+import LocationPicker from './components/LocationPicker'
 
 const API_BASE = '/api'
 
@@ -13,14 +14,38 @@ export default function App() {
   const [error, setError] = useState(null)
   const [selectedSite, setSelectedSite] = useState(null)
   const [mode, setMode] = useState(null) // 'demo' or 'live'
+  const [location, setLocation] = useState(null) // { parcels, city, stateCode, lat, lon }
 
-  const runDemo = async () => {
+  const runDemo = async (locationData) => {
     setLoading(true)
     setError(null)
     setMode('demo')
+    setLocation(locationData)
     try {
-      const res = await fetch(`${API_BASE}/demo/analyze`, { method: 'POST' })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const res = await fetch(`${API_BASE}/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          parcels: locationData.parcels.map(f => ({
+            parcel_id: f.properties.parcel_id,
+            name: f.properties.name || '',
+            geometry: f.geometry,
+            properties: f.properties,
+          })),
+          study_date: '2026-08-03',
+          window_start: '2026-08-03',
+          window_end: '2026-08-03',
+          granularity: 80,
+          buffer_m: 400,
+          exceedance_threshold_c: 32.0,
+          refresh: false,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
+        const detail = typeof err.detail === 'object' ? err.detail.message || JSON.stringify(err.detail) : err.detail
+        throw new Error(detail || `HTTP ${res.status}`)
+      }
       const data = await res.json()
       setAnalysis(data)
       setSelectedSite(data.sites[data.sites.length - 1])
@@ -31,16 +56,12 @@ export default function App() {
     }
   }
 
-  const runLive = async () => {
+  const runLive = async (locationData) => {
     setLoading(true)
     setError(null)
     setMode('live')
+    setLocation(locationData)
     try {
-      // Use the NYC sample parcels as input, but with refresh=true for live API calls
-      const parcelsRes = await fetch(`${API_BASE}/demo/parcels`)
-      if (!parcelsRes.ok) throw new Error('Failed to load parcel data')
-      const parcelsData = await parcelsRes.json()
-
       const today = new Date()
       const weekAgo = new Date(today)
       weekAgo.setDate(today.getDate() - 6)
@@ -50,7 +71,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          parcels: parcelsData.features.map(f => ({
+          parcels: locationData.parcels.map(f => ({
             parcel_id: f.properties.parcel_id,
             name: f.properties.name || '',
             geometry: f.geometry,
@@ -67,7 +88,8 @@ export default function App() {
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
-        throw new Error(err.detail || `HTTP ${res.status}`)
+        const detail = typeof err.detail === 'object' ? err.detail.message || JSON.stringify(err.detail) : err.detail
+        throw new Error(detail || `HTTP ${res.status}`)
       }
       const data = await res.json()
       setAnalysis(data)
@@ -89,35 +111,13 @@ export default function App() {
               <span className="text-[#0E4A8A]">Site</span>Verdict
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
-              Heat-Risk Due-Diligence Platform · New York
+              Heat-Risk Due-Diligence Platform{location ? ` · ${location.city}, ${location.stateCode}` : ''}
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {!analysis && (
-              <div className="flex gap-3">
-                <button
-                  onClick={runDemo}
-                  disabled={loading}
-                  className="px-5 py-2.5 bg-slate-600 text-white font-medium rounded-lg
-                    hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-colors shadow-sm text-sm"
-                >
-                  {loading && mode === 'demo' ? 'Analyzing...' : 'Demo Mode'}
-                </button>
-                <button
-                  onClick={runLive}
-                  disabled={loading}
-                  className="px-5 py-2.5 bg-[#0E4A8A] text-white font-medium rounded-lg
-                    hover:bg-[#0c3d73] disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-colors shadow-sm text-sm"
-                >
-                  {loading && mode === 'live' ? 'Analyzing...' : 'Run Live (FortyGuard API)'}
-                </button>
-              </div>
-            )}
             {analysis && (
               <button
-                onClick={() => { setAnalysis(null); setSelectedSite(null); setMode(null) }}
+                onClick={() => { setAnalysis(null); setSelectedSite(null); setMode(null); setLocation(null) }}
                 className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg
                   hover:bg-slate-50 transition-colors"
               >
@@ -131,44 +131,23 @@ export default function App() {
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-6 py-6">
         {!analysis && !loading && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🌡️</div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">
-              Which site should you choose?
-            </h2>
-            <p className="text-slate-500 max-w-lg mx-auto mb-6">
-              SiteVerdict compares candidate sites using FortyGuard's hyperlocal temperature
-              intelligence. Peak temperature alone is misleading — exposure duration tells
-              the real story.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-              <button
-                onClick={runDemo}
-                disabled={loading}
-                className="px-8 py-3 bg-slate-600 text-white font-semibold rounded-lg
-                  hover:bg-slate-700 transition-colors shadow-md text-lg"
-              >
-                Run Demo: 6 NYC Sites
-              </button>
-              <button
-                onClick={runLive}
-                disabled={loading}
-                className="px-8 py-3 bg-[#0E4A8A] text-white font-semibold rounded-lg
-                  hover:bg-[#0c3d73] transition-colors shadow-md text-lg"
-              >
-                Run Live: FortyGuard API
-              </button>
+          <div className="py-10">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4">🌡️</div>
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                Which site should you choose?
+              </h2>
+              <p className="text-slate-500 max-w-lg mx-auto">
+                SiteVerdict compares candidate sites using FortyGuard's hyperlocal temperature
+                intelligence. Select any US location to analyze.
+              </p>
             </div>
-            <div className="flex justify-center gap-6 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
-                Demo — cached data, zero credits
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#0E4A8A] inline-block"></span>
-                Live — real FortyGuard API calls
-              </span>
-            </div>
+            
+            <LocationPicker 
+              onDemo={runDemo}
+              onLive={runLive}
+              loading={loading}
+            />
           </div>
         )}
 
@@ -180,8 +159,8 @@ export default function App() {
             </p>
             <p className="text-sm text-slate-400 mt-1">
               {mode === 'live'
-                ? 'Fetching heatmap, exceedance, and persistence layers'
-                : 'Using cached FortyGuard data'}
+                ? `Fetching heatmap for ${location?.city || 'selected location'}...`
+                : `Using cached FortyGuard data for ${location?.city || 'selected location'}`}
             </p>
           </div>
         )}
@@ -206,7 +185,7 @@ export default function App() {
               </span>
               {mode === 'live' && (
                 <span className="text-xs text-slate-400">
-                  Real API credits consumed for this analysis
+                  Real API credits consumed
                 </span>
               )}
               {mode === 'demo' && (
@@ -221,7 +200,7 @@ export default function App() {
               <div className="flex flex-wrap items-center gap-6 text-sm">
                 <div>
                   <span className="text-slate-400">Region</span>
-                  <p className="font-semibold">New York</p>
+                  <p className="font-semibold">{location?.city || 'Unknown'}, {location?.stateCode || ''}</p>
                 </div>
                 <div>
                   <span className="text-slate-400">Study Date</span>
@@ -260,6 +239,10 @@ export default function App() {
                   sites={analysis.sites}
                   selectedSite={selectedSite}
                   onSelect={setSelectedSite}
+                  heatmapTcm={analysis.heatmap_tcm}
+                  heatmapExceedance={analysis.heatmap_exceedance}
+                  heatmapPersistence={analysis.heatmap_persistence}
+                  aoiGeometry={analysis.aoi_geometry}
                 />
               </div>
               <div className="lg:col-span-3">

@@ -79,6 +79,12 @@ class AnalysisResponse(BaseModel):
     sites: list[SiteMetrics] = Field(default_factory=list)
     recommendation: str = ""
     top_site_id: str = ""
+    # Heatmap layers from FortyGuard (for map visualization)
+    heatmap_tcm: dict | None = None  # GeoJSON FeatureCollection with average_temperature
+    heatmap_exceedance: dict | None = None  # GeoJSON FeatureCollection with exceedance hours
+    heatmap_persistence: dict | None = None  # GeoJSON FeatureCollection with persistence hours
+    # AOI geometry for map bounds
+    aoi_geometry: dict | None = None  # GeoJSON polygon of the analysis area
 
 
 class HealthResponse(BaseModel):

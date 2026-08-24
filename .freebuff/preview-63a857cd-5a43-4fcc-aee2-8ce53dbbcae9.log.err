@@ -1,0 +1,9 @@
+[2m3:32:57 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/demo/analyze[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[2m3:32:59 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/demo/analyze[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[2m3:33:00 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/demo/parcels[39m
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)

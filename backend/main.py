@@ -17,6 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from shapely.geometry import Polygon, shape, mapping
 
 from .models import AnalyzeRequest, AnalysisResponse, SiteMetrics, CopilotChatRequest, CopilotChatResponse
@@ -277,6 +278,11 @@ async def _run_analysis(parcels_data, study_date, window_start, window_end,
     tcm_map = tcm_data.get("result", tcm_data).get("map_data", tcm_data.get("map_data", tcm_data))
     exc_map = exc_data.get("result", exc_data).get("map_data", exc_data.get("map_data", exc_data)) if exc_data else None
     per_map = per_data.get("result", per_data).get("map_data", per_data.get("map_data", per_data)) if per_data else None
+    
+    # Store raw GeoJSON for frontend visualization
+    heatmap_tcm_geojson = tcm_map if tcm_map and tcm_map.get("type") == "FeatureCollection" else None
+    heatmap_exc_geojson = exc_map if exc_map and exc_map.get("type") == "FeatureCollection" else None
+    heatmap_per_geojson = per_map if per_map and per_map.get("type") == "FeatureCollection" else None
 
     tcm_tiles = _extract_tile_values(tcm_map, "average_temperature")
     exc_tiles = _extract_tile_values(exc_map, "value") if exc_map else []
@@ -347,6 +353,10 @@ async def _run_analysis(parcels_data, study_date, window_start, window_end,
         sites=ranked,
         recommendation=recommendation,
         top_site_id=top.parcel_id if top else "",
+        heatmap_tcm=heatmap_tcm_geojson,
+        heatmap_exceedance=heatmap_exc_geojson,
+        heatmap_persistence=heatmap_per_geojson,
+        aoi_geometry=mapping(shape(aoi_geojson)) if aoi_geojson else None,
     )
 
 
@@ -367,34 +377,65 @@ async def analyze(req: AnalyzeRequest):
 
     mode = "LIVE" if req.refresh else "CACHED"
     try:
+        # Live mode needs much longer timeout: 3 heatmaps + 6 satellite + 6 env_params
+        # Each API call can take 10-60 seconds, so we need 5+ minutes for live
+        timeout = 300.0 if req.refresh else 30.0  # 5 min live, 30 sec cached
         return await asyncio.wait_for(
             _run_analysis(
                 parcels_data, study_date, window_start, window_end,
                 req.granularity, req.buffer_m, req.exceedance_threshold_c,
                 refresh=req.refresh, mode=mode,
             ),
-            timeout=60.0 if req.refresh else 30.0,
+            timeout=timeout,
         )
     except asyncio.TimeoutError:
-        raise HTTPException(504, "Analysis timed out. FortyGuard API may be unreachable. "
-                            "Check network connectivity and try again.")
+        raise HTTPException(504, {
+            "code": "ANALYSIS_TIMEOUT",
+            "message": f"Analysis timed out after {timeout:.0f} seconds. FortyGuard API may be slow or unreachable.",
+            "resolution": "Try again in a few minutes. If the issue persists, the FortyGuard API may be experiencing high load."
+        })
+
+
+class DemoAnalyzeRequest(BaseModel):
+    """Optional request body for demo analysis with custom parcels."""
+    parcels: list[dict] | None = None
+    study_date: str = "2026-08-03"
+    window_start: str = "2026-08-03"
+    window_end: str = "2026-08-03"
+    granularity: int = 80
+    buffer_m: int = 400
+    exceedance_threshold_c: float = 32.0
 
 
 @app.post("/api/demo/analyze", response_model=AnalysisResponse)
-async def analyze_demo():
-    """Run demo analysis using cached FortyGuard data (zero API credits)."""
-    if not PARCEL_FILE.exists():
-        raise HTTPException(404, "Demo parcel data not found.")
-    parcels_data = json.loads(PARCEL_FILE.read_text(encoding="utf-8"))
-    parcels = [{"parcel_id": f["properties"]["parcel_id"], "name": f["properties"].get("name", ""),
-                "geometry": f["geometry"], "properties": f["properties"]} for f in parcels_data["features"]]
-    # Use a fixed historical date for reproducible cached demo results
-    study_date = "2026-08-03"
-    window_start = "2026-08-03"
-    window_end = "2026-08-03"
+async def analyze_demo(req: DemoAnalyzeRequest | None = None):
+    """Run demo analysis using cached FortyGuard data (zero API credits).
+    Accepts optional custom parcels in request body."""
+    # Use custom parcels from request if provided, otherwise fall back to NYC defaults
+    if req and req.parcels:
+        parcels = req.parcels
+        study_date = req.study_date
+        window_start = req.window_start
+        window_end = req.window_end
+        granularity = req.granularity
+        buffer_m = req.buffer_m
+        exceedance_threshold_c = req.exceedance_threshold_c
+    else:
+        if not PARCEL_FILE.exists():
+            raise HTTPException(404, "Demo parcel data not found.")
+        parcels_data = json.loads(PARCEL_FILE.read_text(encoding="utf-8"))
+        parcels = [{"parcel_id": f["properties"]["parcel_id"], "name": f["properties"].get("name", ""),
+                    "geometry": f["geometry"], "properties": f["properties"]} for f in parcels_data["features"]]
+        study_date = "2026-08-03"
+        window_start = "2026-08-03"
+        window_end = "2026-08-03"
+        granularity = 80
+        buffer_m = 400
+        exceedance_threshold_c = 32.0
+
     return await _run_analysis(
         parcels, study_date=study_date, window_start=window_start, window_end=window_end,
-        granularity=80, buffer_m=400, exceedance_threshold_c=32.0,
+        granularity=granularity, buffer_m=buffer_m, exceedance_threshold_c=exceedance_threshold_c,
         refresh=False, mode="DEMO",
     )
 
