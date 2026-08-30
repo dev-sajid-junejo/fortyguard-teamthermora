@@ -13,17 +13,11 @@ import os
 import time
 from pathlib import Path
 
-import socket
-
 import requests
 
 from .cache import load_cache, save_cache
 
 log = logging.getLogger("siteverdict.fortyguard")
-
-# Prevent DNS/connect hangs from blocking the entire uvicorn worker.
-# This covers the DNS resolution phase which requests' timeout doesn't.
-socket.setdefaulttimeout(15)
 
 _RETRYABLE = {429, 500, 502, 503, 504}
 _MAX_RETRIES = 2

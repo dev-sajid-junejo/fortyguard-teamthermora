@@ -17,6 +17,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from shapely.geometry import Polygon, shape, mapping
 
@@ -508,3 +510,17 @@ async def copilot_report(req: CopilotChatRequest):
         return CopilotChatResponse(reply=report, available=True)
     except RuntimeError as e:
         raise HTTPException(502, detail=f"AI Copilot error: {e}")
+
+
+# ── Serve frontend static files ──────────────────────────────────────
+_FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if _FRONTEND_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(_FRONTEND_DIR / "assets")), name="static-assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Catch-all: serve frontend files or fall back to index.html for SPA routing."""
+        file_path = _FRONTEND_DIR / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(_FRONTEND_DIR / "index.html"))
