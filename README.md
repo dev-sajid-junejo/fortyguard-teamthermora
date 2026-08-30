@@ -52,11 +52,14 @@ SiteVerdict/
 │   └── src/
 │       ├── App.jsx             # Main app with analysis flow
 │       └── components/
-│           ├── Map.jsx         # Leaflet map with parcel markers
-│           ├── RankedResults.jsx  # Ranked site cards with verdicts
-│           ├── Recommendation.jsx # Recommendation banner
-│           ├── VerdictBadge.jsx   # PASS/CAUTION/FAIL badges
-│           └── VerdictLegend.jsx  # Threshold source citations
+│           ├── Map.jsx              # Leaflet map with TCM/Exceedance/Persistence layers
+│           ├── RankedResults.jsx    # Ranked site cards with verdicts
+│           ├── Recommendation.jsx   # Recommendation banner
+│           ├── ComparisonMatrix.jsx # Side-by-side site metrics comparison
+│           ├── CostEstimator.jsx    # Heat risk financial impact estimation
+│           ├── CopilotChat.jsx      # Gemini AI copilot chat
+│           ├── VerdictBadge.jsx     # PASS/CAUTION/FAIL badges
+│           └── VerdictLegend.jsx    # Threshold source citations
 ├── data/                       # Cached FortyGuard API responses (demo)
 │   ├── heatmaps/               # tcm, exceedance, persistence
 │   ├── satellite/              # land-cover segmentation
@@ -287,7 +290,7 @@ curl -X POST https://api.fortyguard.com/v1/heatmap \
 ## What Doesn't Work Yet
 
 - Custom parcel analysis via the UI (only demo mode is wired to the frontend; the `/api/analyze` endpoint works but the UI doesn't have a parcel upload flow)
-- PDF/CSV export of the analysis results
+- PDF export of the analysis results
 - Rank-stability sensitivity test under weight perturbation (planned Layer C feature)
 
 ## Credits

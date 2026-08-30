@@ -5,6 +5,8 @@ import Recommendation from './components/Recommendation'
 import VerdictLegend from './components/VerdictLegend'
 import CopilotChat from './components/CopilotChat'
 import LocationPicker from './components/LocationPicker'
+import ComparisonMatrix from './components/ComparisonMatrix'
+import CostEstimator from './components/CostEstimator'
 
 const API_BASE = '/api'
 
@@ -253,6 +255,12 @@ export default function App() {
                 />
               </div>
             </div>
+
+            {/* Site Comparison Matrix */}
+            <ComparisonMatrix sites={analysis.sites} />
+
+            {/* Heat Risk Cost Estimator */}
+            <CostEstimator sites={analysis.sites} />
 
             {/* Verdict Legend */}
             <VerdictLegend />
