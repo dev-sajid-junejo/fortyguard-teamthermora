@@ -7,6 +7,8 @@ import CopilotChat from './components/CopilotChat'
 import LocationPicker from './components/LocationPicker'
 import ComparisonMatrix from './components/ComparisonMatrix'
 import CostEstimator from './components/CostEstimator'
+import VoiceAlert from './components/VoiceAlert'
+import ImpactSimulator from './components/ImpactSimulator'
 
 const API_BASE = '/api'
 
@@ -234,6 +236,9 @@ export default function App() {
             {/* Recommendation */}
             <Recommendation text={analysis.recommendation} />
 
+            {/* Voice Alert for High Risk */}
+            <VoiceAlert sites={analysis.sites} analysis={analysis} />
+
             {/* Map + Results side by side */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               <div className="lg:col-span-2">
@@ -261,6 +266,9 @@ export default function App() {
 
             {/* Heat Risk Cost Estimator */}
             <CostEstimator sites={analysis.sites} />
+
+            {/* Before/After Impact Simulator */}
+            <ImpactSimulator sites={analysis.sites} />
 
             {/* Verdict Legend */}
             <VerdictLegend />
